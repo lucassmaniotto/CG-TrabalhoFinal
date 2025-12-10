@@ -1,5 +1,8 @@
 import * as THREE from "three";
 import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
+import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
+import { MTLLoader } from "three/addons/loaders/MTLLoader.js";
+import { TDSLoader } from "three/addons/loaders/TDSLoader.js";
 import { CONFIG } from "./config.js";
 
 const textureLoader = new THREE.TextureLoader();
@@ -128,7 +131,7 @@ export function createStonePath(scene, config = {}) {
     startZ = -15,
     endX = 0,
     endZ = 600,
-    width = 30,
+    width = 55,
     segments = 15,
     texturePath = "./assets/Floor/textura_pedra.jpg", // Caminho da textura
   } = config;
@@ -190,4 +193,153 @@ export function createStonePath(scene, config = {}) {
   }
 
   console.log("Caminho de pedra criado!");
+}
+
+// Carrega e instancia um modelo .3ds (usa TDSLoader e aplica texturas da pasta)
+export async function createTreesFrom3DS(scene, options = {}) {
+  const {
+    modelPath = "./assets/models/Tree/Tree1.3ds",
+    count = 10,
+    areaWidth = 120,
+    areaDepth = 120,
+    groundY = CONFIG.scene.groundPosition.y,
+    avoidArea = null,
+    scaleMin = 0.8,
+    scaleMax = 1.2,
+    modelRotation = { x: 0, y: 0, z: 0 },
+  } = options;
+
+  return new Promise((resolve) => {
+    const loader = new TDSLoader();
+    // define pasta para recursos (texturas)
+    const base = modelPath.substring(0, modelPath.lastIndexOf('/') + 1);
+    loader.setResourcePath(base);
+
+    loader.load(
+      modelPath,
+      (object) => {
+        // object é um Group / Object3D
+        object.traverse((c) => {
+          if (c.isMesh) {
+            c.castShadow = true;
+            c.receiveShadow = false;
+          }
+        });
+
+        for (let i = 0; i < count; i++) {
+          const x = (Math.random() - 0.5) * areaWidth;
+          const z = (Math.random() - 0.5) * areaDepth;
+
+          if (avoidArea) {
+            const dx = x - (avoidArea.x || 0);
+            const dz = z - (avoidArea.z || 0);
+            if (Math.sqrt(dx * dx + dz * dz) < (avoidArea.radius || 0)) {
+              i--; continue;
+            }
+          }
+
+          const clone = object.clone(true);
+          const s = scaleMin + Math.random() * (scaleMax - scaleMin);
+          clone.scale.set(s, s, s);
+          // apply optional model rotation correction (useful if model axis differs)
+          if (modelRotation) {
+            clone.rotation.x += modelRotation.x || 0;
+            clone.rotation.y += modelRotation.y || 0;
+            clone.rotation.z += modelRotation.z || 0;
+          }
+          clone.position.set(x, groundY, z);
+          clone.rotation.y += Math.random() * Math.PI * 2;
+          scene.add(clone);
+        }
+
+        console.log(`Instanciadas ${count} árvores (.3ds) a partir de ${modelPath}`);
+        resolve();
+      },
+      undefined,
+      (err) => {
+        console.error("Erro carregando .3ds:", err);
+        resolve();
+      }
+    );
+  });
+}
+
+// Cria uma fileira de árvores à esquerda do caminho definido por start/end
+export async function createTreeRowFrom3DS(scene, options = {}) {
+  // Merge options with defaults in CONFIG.treeRow (if present)
+  const defaults = CONFIG.treeRow || {};
+  const opts = Object.assign({}, defaults, options);
+
+  // Resolve groundY: if not numeric, fall back to CONFIG.scene.groundPosition.y
+  if (typeof opts.groundY !== "number") {
+    opts.groundY = CONFIG.scene && CONFIG.scene.groundPosition
+      ? CONFIG.scene.groundPosition.y
+      : 0;
+  }
+
+  // side: 'left' or 'right' - decide o sinal do vetor perpendicular
+  const side = opts.side || 'left';
+
+  return new Promise((resolve) => {
+    const loader = new TDSLoader();
+    const base = opts.modelPath.substring(0, opts.modelPath.lastIndexOf('/') + 1);
+    loader.setResourcePath(base);
+
+    loader.load(
+      opts.modelPath,
+      (object) => {
+        object.traverse((c) => {
+          if (c.isMesh) { c.castShadow = true; c.receiveShadow = false; }
+        });
+
+        // direção do caminho
+        const dx = opts.endX - opts.startX;
+        const dz = opts.endZ - opts.startZ;
+        // vetor perpendicular: à esquerda = (-dz, dx), à direita = (dz, -dx)
+        let perpX = -dz;
+        let perpZ = dx;
+        if (side === 'right') {
+          perpX = -perpX;
+          perpZ = -perpZ;
+        }
+        const perpLen = Math.sqrt(perpX * perpX + perpZ * perpZ) || 1;
+        const nx = perpX / perpLen;
+        const nz = perpZ / perpLen;
+
+        for (let i = 0; i < opts.count; i++) {
+          const t = opts.count > 1 ? i / (opts.count - 1) : 0.5;
+          const xOnPath = opts.startX + dx * t;
+          const zOnPath = opts.startZ + dz * t;
+
+          const x = xOnPath + nx * opts.offset;
+          const z = zOnPath + nz * opts.offset;
+
+          const clone = object.clone(true);
+          const s = opts.scaleMin + Math.random() * (opts.scaleMax - opts.scaleMin);
+          clone.scale.set(s, s, s);
+
+          // apply optional model rotation correction (set, not add)
+          if (opts.modelRotation) {
+            clone.rotation.x = (opts.modelRotation.x || 0);
+            clone.rotation.y = (opts.modelRotation.y || 0);
+            clone.rotation.z = (opts.modelRotation.z || 0);
+          }
+
+          clone.position.set(x, opts.groundY + opts.yOffset, z);
+
+          // Orienta levemente em direção do caminho com uma pequena variação (add to modelRotation.y)
+          const pathYaw = Math.atan2(dx, dz);
+          const variation = (Math.random() - 0.5) * opts.randomYaw;
+          clone.rotation.y += pathYaw + Math.PI / 2 + variation;
+
+          scene.add(clone);
+        }
+
+        console.log(`Fileira de ${opts.count} árvores criada (${opts.modelPath}) lado=${side}`);
+        resolve();
+      },
+      undefined,
+      (err) => { console.error("Erro carregando .3ds para fileira:", err); resolve(); }
+    );
+  });
 }

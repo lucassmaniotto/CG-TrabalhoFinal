@@ -47,6 +47,23 @@ export const CONFIG = {
     characterIdleModel: "Idle.fbx",
     characterWalkModel: "Walking.fbx",
     characterTexture: "./assets/models/Player/textures/",
+    treeModel: "./assets/models/Tree/Tree1.3ds",
+  },
+
+  // Configurações padrão para a função createTreeRowFrom3DS
+  treeRow: {
+    modelPath: "./assets/models/Tree/Tree1.3ds", // caminho do modelo
+    startX: 0,    // X do início do caminho
+    startZ: -15,  // Z do início do caminho
+    endX: 0,      // X do fim do caminho
+    endZ: 600,    // Z do fim do caminho
+    offset: 18,   // deslocamento lateral à esquerda do centro do caminho (use negativo para direita)
+    count: 10,    // número de árvores na fileira
+    groundY: { useConfigGround: true }, // se true usa CONFIG.scene.groundPosition.y, pode substituir por número
+    scaleMin: 0.85,
+    scaleMax: 1.05,
+    yOffset: 0.0,    // ajuste vertical adicional (se necessário)
+    randomYaw: 0.3,  // variação aleatória na rotação Y (radianos)
   },
 
   // Animações (índices no array de animações do FBX)
