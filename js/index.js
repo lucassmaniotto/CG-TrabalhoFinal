@@ -8,6 +8,7 @@ import {
   loadAllObjects,
   setOnObjectLoadedCallback,
   objects,
+  createStonePath,
 } from "./loaders.js";
 import {
   input,
@@ -50,6 +51,9 @@ export function init() {
   );
   ground.receiveShadow = true;
   scene.add(ground);
+
+  // Cria o caminho de pedra
+  createStonePath(scene);
 
   renderer = new THREE.WebGLRenderer();
   renderer.shadowMap.enabled = CONFIG.shadows.enabled;

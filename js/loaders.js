@@ -120,3 +120,74 @@ export function loadGroundTexture() {
     metalness: 0.0,
   });
 }
+
+// Cria um caminho de pedra na cena
+export function createStonePath(scene, config = {}) {
+  const {
+    startX = 0,
+    startZ = -15,
+    endX = 0,
+    endZ = 600,
+    width = 30,
+    segments = 15,
+    texturePath = "./assets/Floor/textura_pedra.jpg", // Caminho da textura
+  } = config;
+
+  // Carrega a textura
+  const stoneTexture = textureLoader.load(
+    texturePath,
+    (tex) => {
+      try {
+        tex.encoding = THREE.sRGBEncoding;
+      } catch (e) {}
+      tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+      tex.repeat.set(5, 5); // Ajuste conforme necessário
+    },
+    undefined,
+    (err) => {
+      console.warn("Não foi possível carregar a textura do caminho de pedra", err);
+    }
+  );
+
+  // Material da pedra com textura
+  const stoneMaterial = new THREE.MeshStandardMaterial({
+    map: stoneTexture,
+    roughness: 0.85,
+    metalness: 0.0,
+  });
+
+  // Cria segmentos do caminho
+  for (let i = 0; i < segments; i++) {
+    const t = i / segments;
+    const nextT = (i + 1) / segments;
+
+    // Interpolação linear
+    const x1 = startX + (endX - startX) * t;
+    const z1 = startZ + (endZ - startZ) * t;
+    const x2 = startX + (endX - startX) * nextT;
+    const z2 = startZ + (endZ - startZ) * nextT;
+
+    // Calcula direção e comprimento do segmento
+    const dx = x2 - x1;
+    const dz = z2 - z1;
+    const length = Math.sqrt(dx * dx + dz * dz);
+
+    // Cria geometria do segmento
+    const geometry = new THREE.BoxGeometry(width, 0.15, length);
+    const mesh = new THREE.Mesh(geometry, stoneMaterial);
+
+    // Posiciona no centro do segmento
+    mesh.position.set((x1 + x2) / 2, -4.83, (z1 + z2) / 2);
+
+    // Rotaciona para alinhar com a direção
+    if (length > 0) {
+      mesh.rotation.y = Math.atan2(dx, dz);
+    }
+
+    mesh.receiveShadow = true;
+    mesh.castShadow = true;
+    scene.add(mesh);
+  }
+
+  console.log("Caminho de pedra criado!");
+}
