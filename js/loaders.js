@@ -30,7 +30,7 @@ function loadFBX(path) {
  * e combina suas animações em um único objeto
  */
 export async function loadCharacterWithAnimations(scene) {
-  const basePath = "./assets/models/Man/";
+  const basePath = "./assets/models/Player/";
 
   try {
     const [idleObj, walkObj] = await Promise.all([
@@ -81,10 +81,10 @@ export async function loadCharacterWithAnimations(scene) {
     );
 
     scene.add(character);
-    objects["man"] = character;
+    objects["player"] = character;
 
     if (onObjectLoadedCallback) {
-      onObjectLoadedCallback("Man", character);
+      onObjectLoadedCallback("Player", character);
     }
   } catch (error) {
     console.error("Erro ao carregar o personagem com animações:", error);

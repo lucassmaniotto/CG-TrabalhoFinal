@@ -7,7 +7,7 @@ export const CONFIG = {
     defaultPosition: { x: 0, y: 0, z: 0 },
   },
 
-  // Configuração do homem
+  // Configuração do Player
   character: {
     baseScale: 0.05,
     basePosition: { x: 0, y: -5, z: 0 },
@@ -46,7 +46,7 @@ export const CONFIG = {
     groundTexture: "./assets/Floor/grass.jpg",
     characterIdleModel: "Idle.fbx",
     characterWalkModel: "Walking.fbx",
-    characterTexture: "./assets/models/Man/textures/",
+    characterTexture: "./assets/models/Player/textures/",
   },
 
   // Animações (índices no array de animações do FBX)

@@ -63,7 +63,7 @@ export function init() {
 
   // Setup de callbacks para loaders
   setOnObjectLoadedCallback((objName, object) => {
-    if (objName.toLowerCase() === "man") {
+      if (objName.toLowerCase() === "player") {
       AnimationModule.initAnimationMixer(object);
       CameraModule.setFollowTarget(object); // câmera segue o personagem
     }
@@ -101,7 +101,7 @@ function animate() {
   AnimationModule.updateAnimations(delta);
 
   // Atualiza movimento do personagem
-  const character = objects["man"];
+    const character = objects["player"];
   updateCharacterMovement(character, delta);
 
   // Atualiza orientação da câmera via mouse
