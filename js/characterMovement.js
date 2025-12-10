@@ -1,15 +1,9 @@
-// ============================================
-// Character Movement - Lógica de movimento do personagem
-// ============================================
-
 import * as THREE from "three";
 import { CONFIG } from "./config.js";
 import { input } from "./input.js";
 import { getActions, switchAction } from "./animation.js";
 
-/**
- * Atualiza o movimento do personagem
- */
+// Atualiza o movimento do personagem
 export function updateCharacterMovement(character, delta) {
   if (!character) return;
 

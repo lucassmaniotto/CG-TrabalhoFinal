@@ -1,7 +1,3 @@
-// ============================================
-// Config - Constantes e configurações globais
-// ============================================
-
 export const CONFIG = {
   // Configuração da câmera
   camera: {
@@ -33,7 +29,7 @@ export const CONFIG = {
 
   // Câmera em primeira pessoa
   firstPersonCamera: {
-    distance: 15, // distância da frente do objeto
+    distance: 5, // distância da frente do objeto
     height: 20, // altura da cabeça
   },
 
@@ -41,7 +37,7 @@ export const CONFIG = {
   scene: {
     backgroundColor: 0x87ceeb,
     ambientLightIntensity: 0.3,
-    groundPosition: { x: 0, y: -6, z: 0 },
+    groundPosition: { x: 0, y: -5, z: 0 },
     groundSize: 20000,
   },
 

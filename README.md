@@ -23,3 +23,11 @@ Seta para Direita: move para a direita
 ````
 V: alterna entre visão em primeira e terceira pessoa
 ````
+
+### Controles de câmera com mouse
+- Segure o botão do mouse (esquerdo ou direito) e mova para orbitar a câmera em terceira pessoa.
+- Em primeira pessoa, ao mover o mouse o personagem gira junto, alinhando a frente do modelo à direção da câmera.
+
+### Animações do personagem
+- Modelo usa dois FBX separados (Idle.fbx e Walking.fbx).
+- Parado: toca animação Idle. Em movimento: toca animação Walking.

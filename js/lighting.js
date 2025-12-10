@@ -1,7 +1,3 @@
-// ============================================
-// Lighting - Gerenciamento de iluminação
-// ============================================
-
 import * as THREE from "three";
 import { GUI } from "three/addons/libs/lil-gui.module.min.js";
 
@@ -9,9 +5,7 @@ let gui = null;
 let parametrosGUI = null;
 let dirLight, dirHelper, pointLight, pointHelper, spotLight, spotHelper;
 
-/**
- * Cria uma luz com controles GUI
- */
+// Cria uma luz com controles GUI
 function createLightWithGui({ type, label, state, guiParent, intensityRange = [0, 5, 0.1] }, scene) {
   const LIGHT_DEFS = {
     directional: {
@@ -128,9 +122,7 @@ function createLightWithGui({ type, label, state, guiParent, intensityRange = [0
   return { light, helper, folder };
 }
 
-/**
- * Inicializa o sistema de iluminação e GUI
- */
+// Inicializa o sistema de iluminação e GUI
 export function initLighting(scene) {
   gui = new GUI();
   gui.width = 300;
@@ -168,9 +160,7 @@ export function initLighting(scene) {
   spotHelper = spotResult.helper;
 }
 
-/**
- * Atualiza helpers de luz (precisa ser chamado no animate)
- */
+// Atualiza helpers de luz (precisa ser chamado no animate)
 export function updateLightHelpers() {
   if (spotHelper && spotHelper.update) spotHelper.update();
 }

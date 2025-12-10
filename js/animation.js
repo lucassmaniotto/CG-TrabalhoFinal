@@ -1,7 +1,3 @@
-// ============================================
-// Animation - Gerenciamento de animações
-// ============================================
-
 import * as THREE from "three";
 
 let mixer = null;
@@ -80,16 +76,11 @@ export function updateAnimations(delta) {
   }
 }
 
-/**
- * Retorna as ações disponíveis
- */
+// Getters
 export function getActions() {
   return actions;
 }
 
-/**
- * Retorna o mixer
- */
 export function getMixer() {
   return mixer;
 }

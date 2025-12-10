@@ -1,47 +1,56 @@
-// ============================================
-// Imports principais
-// ============================================
 import * as THREE from "three";
 
 // Módulos customizados
 import { CONFIG } from "./config.js";
 import { initLighting, updateLightHelpers } from "./lighting.js";
-import { loadGroundTexture, loadAllObjects, setOnObjectLoadedCallback, objects } from "./loaders.js";
-import { input, onKeyDown, onKeyUp, setOnCameraToggleCallback } from "./input.js";
+import {
+  loadGroundTexture,
+  loadAllObjects,
+  setOnObjectLoadedCallback,
+  objects,
+} from "./loaders.js";
+import {
+  input,
+  onKeyDown,
+  onKeyUp,
+  setOnCameraToggleCallback,
+  onMouseDown,
+  onMouseUp,
+  onMouseMove,
+  consumeMouseDelta,
+} from "./input.js";
 import * as CameraModule from "./camera.js";
 import * as AnimationModule from "./animation.js";
 import { updateCharacterMovement } from "./characterMovement.js";
 
-// ============================================
 // Variáveis globais
-// ============================================
 let scene, renderer;
 const clock = new THREE.Clock();
 
-// ============================================
 // Inicialização
-// ============================================
 export function init() {
-  // Inicializa câmera
   const camera = CameraModule.initCamera(window.innerWidth, window.innerHeight);
 
-  // Inicializa cena
   scene = new THREE.Scene();
   scene.background = new THREE.Color(CONFIG.scene.backgroundColor);
-  scene.add(new THREE.AmbientLight(0xffffff, CONFIG.scene.ambientLightIntensity));
+  scene.add(
+    new THREE.AmbientLight(0xffffff, CONFIG.scene.ambientLightIntensity)
+  );
 
-  // Carrega e configura o chão
   const groundMaterial = loadGroundTexture();
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(CONFIG.scene.groundSize, CONFIG.scene.groundSize),
     groundMaterial
   );
   ground.rotation.x = -Math.PI / 2;
-  ground.position.set(CONFIG.scene.groundPosition.x, CONFIG.scene.groundPosition.y, CONFIG.scene.groundPosition.z);
+  ground.position.set(
+    CONFIG.scene.groundPosition.x,
+    CONFIG.scene.groundPosition.y,
+    CONFIG.scene.groundPosition.z
+  );
   ground.receiveShadow = true;
   scene.add(ground);
 
-  // Inicializa renderer
   renderer = new THREE.WebGLRenderer();
   renderer.shadowMap.enabled = CONFIG.shadows.enabled;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -50,16 +59,13 @@ export function init() {
     renderer.outputEncoding = THREE.sRGBEncoding;
   } catch (e) {}
 
-  // Inicializa iluminação
   initLighting(scene);
 
   // Setup de callbacks para loaders
   setOnObjectLoadedCallback((objName, object) => {
     if (objName.toLowerCase() === "man") {
-      // Inicializa animações
       AnimationModule.initAnimationMixer(object);
-      // Define câmera follow
-      CameraModule.setFollowTarget(object);
+      CameraModule.setFollowTarget(object); // câmera segue o personagem
     }
   });
 
@@ -81,11 +87,13 @@ export function init() {
   window.addEventListener("resize", handleWindowResize);
   window.addEventListener("keydown", onKeyDown, { passive: false });
   window.addEventListener("keyup", onKeyUp, { passive: false });
+  window.addEventListener("mousedown", onMouseDown, { passive: false });
+  window.addEventListener("mouseup", onMouseUp, { passive: false });
+  window.addEventListener("mousemove", onMouseMove, { passive: true });
+  window.addEventListener("contextmenu", (e) => e.preventDefault());
 }
 
-// ============================================
 // Loop de animação
-// ============================================
 function animate() {
   const delta = clock.getDelta();
 
@@ -95,6 +103,9 @@ function animate() {
   // Atualiza movimento do personagem
   const character = objects["man"];
   updateCharacterMovement(character, delta);
+
+  // Atualiza orientação da câmera via mouse
+  CameraModule.applyMouseLook(consumeMouseDelta());
 
   // Atualiza posição da câmera
   CameraModule.updateCameraPosition();
@@ -106,9 +117,7 @@ function animate() {
   renderer.render(scene, CameraModule.getCamera());
 }
 
-// ============================================
 // Event Handlers
-// ============================================
 function handleWindowResize() {
   const width = window.innerWidth;
   const height = window.innerHeight;

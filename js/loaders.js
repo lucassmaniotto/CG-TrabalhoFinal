@@ -1,7 +1,3 @@
-// ============================================
-// Loaders - Carregamento de objetos e texturas
-// ============================================
-
 import * as THREE from "three";
 import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { CONFIG } from "./config.js";
@@ -11,16 +7,12 @@ export const objects = {};
 
 let onObjectLoadedCallback = null;
 
-/**
- * Define callback para quando um objeto for carregado
- */
+// Define callback para quando um objeto for carregado
 export function setOnObjectLoadedCallback(callback) {
   onObjectLoadedCallback = callback;
 }
 
-/**
- * Helper: carrega um FBX e devolve uma Promise
- */
+// Helper para carrega um FBX e devolve uma Promise
 function loadFBX(path) {
   const fbxLoader = new FBXLoader();
   return new Promise((resolve, reject) => {
@@ -99,16 +91,12 @@ export async function loadCharacterWithAnimations(scene) {
   }
 }
 
-/**
- * Carrega todos os objetos da cena
- */
+// Carrega todos os objetos da cena
 export function loadAllObjects(scene) {
   loadCharacterWithAnimations(scene);
 }
 
-/**
- * Carrega textura do chão
- */
+// Carrega textura do chão
 export function loadGroundTexture() {
   const texture = textureLoader.load(
     CONFIG.assets.groundTexture,
