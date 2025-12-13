@@ -9,6 +9,7 @@ import {
   setOnObjectLoadedCallback,
   objects,
   createStonePath,
+  createBenchesAlongPath,
   createTreesFrom3DS,
   createTreeRowFrom3DS,
 } from "./loaders.js";
@@ -70,7 +71,22 @@ export function init() {
     scaleMax: 4,
     yOffset: 0.0,
     randomYaw: 0.3,
-    modelRotation: { x: Math.PI / 2, y: -10.9, z: 0 }
+    modelRotation: { x: Math.PI / 2, y: -10.9, z: 0 },
+  });
+
+  // Adiciona bancos ao longo do caminho (direita)
+  createBenchesAlongPath(scene, {
+    modelPath: "./assets/models/Bench/Bench.fbx",
+    startX: -5,
+    startZ: 0,
+    endX: 0,
+    endZ: 600,
+    count: 10,
+    offset: 24,
+    side: "right",
+    scale: 0.1,
+    yOffset: 4.75,
+    modelRotation: { x: 0, y: 0, z: 0 },
   });
 
   renderer = new THREE.WebGLRenderer();
@@ -85,7 +101,7 @@ export function init() {
 
   // Setup de callbacks para loaders
   setOnObjectLoadedCallback((objName, object) => {
-      if (objName.toLowerCase() === "player") {
+    if (objName.toLowerCase() === "player") {
       AnimationModule.initAnimationMixer(object);
       CameraModule.setFollowTarget(object); // câmera segue o personagem
     }
