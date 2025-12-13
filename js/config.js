@@ -10,7 +10,7 @@ export const CONFIG = {
   // Configuração do Player
   character: {
     baseScale: 0.05,
-    basePosition: { x: 0, y: -5, z: 0 },
+    basePosition: { x: 0, y: -4.8, z: 0 },
     baseRotation: { x: 0, y: 0, z: 0 },
   },
 
@@ -79,8 +79,7 @@ export const CONFIG = {
     segments: 15,
     repeatU: 5,
     repeatV: 5,
-    // deslocamento vertical relativo ao `CONFIG.scene.groundPosition.y` (ex: 0.17 => -4.83 quando ground=-5)
-    groundYOffset: 0.17,
+    groundYOffset: 0.35,
   },
 
   // Configurações para bancos ao longo do caminho
@@ -95,7 +94,7 @@ export const CONFIG = {
     offset: 24,
     side: "left",
     scale: 0.1,
-    yOffset: 4.75,
+    yOffset: 5,
     modelRotation: { x: 0, y: 0, z: 0 },
   },
 
