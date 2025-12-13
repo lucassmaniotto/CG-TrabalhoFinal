@@ -13,10 +13,10 @@
 - Cada tecla altera a posição X:
 
 ````
-Seta para Frente: move para frente
-Seta para Trás: move para trás
-Seta para Esquerda: move para a esquerda
-Seta para Direita: move para a direita
+W: move para frente
+S: move para trás
+A: move para a esquerda
+D: move para a direita
 ````
 
 ### Controles especiais
