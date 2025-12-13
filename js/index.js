@@ -10,6 +10,7 @@ import {
   objects,
   createStonePath,
   createBenchesAlongPath,
+  createStreetLampsAlongPath,
   createTreesFrom3DS,
   createTreeRowFrom3DS,
 } from "./loaders.js";
@@ -63,6 +64,9 @@ export function init() {
 
   // Adiciona bancos ao longo do caminho (direita)
   createBenchesAlongPath(scene);
+
+  // Adiciona 5 postes ao longo do caminho (direita)
+  createStreetLampsAlongPath(scene);
 
   renderer = new THREE.WebGLRenderer();
   renderer.shadowMap.enabled = CONFIG.shadows.enabled;

@@ -9,6 +9,7 @@ import {
 
 export { loadGroundTexture, createStonePath } from "./loaders/stonePath.js";
 import { createBenchesAlongPath as _createBenchesAlongPath } from "./loaders/bench.js";
+import { createStreetLampsAlongPath as _createStreetLampsAlongPath } from "./loaders/streetLamp.js";
 
 export const objects = {};
 
@@ -69,6 +70,15 @@ export function createTreeRowFrom3DS(scene, options = {}) {
 
 export function createBenchesAlongPath(scene, options = {}) {
   return _createBenchesAlongPath(
+    scene,
+    options,
+    objects,
+    onObjectLoadedCallback
+  );
+}
+
+export function createStreetLampsAlongPath(scene, options = {}) {
+  return _createStreetLampsAlongPath(
     scene,
     options,
     objects,

@@ -98,6 +98,24 @@ export const CONFIG = {
     modelRotation: { x: 0, y: 0, z: 0 },
   },
 
+  // Configurações para postes de luz ao longo do caminho (lado direito)
+  streetLamps: {
+    modelPath: "./assets/models/StreetLamp/street_lamp.fbx",
+    texturesDir: "./assets/models/StreetLamp/textures/",
+    count: 5,
+    // acompanha o caminho de pedras
+    startX: 0,
+    startZ: 0,
+    endX: 0,
+    endZ: 600,
+    offset: 24,
+    side: "right",
+    scale: 1,
+    yOffset: 0,
+    // ajuste conforme necessário para o seu FBX
+    modelRotation: { x: 0, y: 0, z: 0 },
+  },
+
   // Configurações gerais para árvores (createTreesFrom3DS)
   trees: {
     modelPath: "./assets/models/Tree/Tree1.3ds",
