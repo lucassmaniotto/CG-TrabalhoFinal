@@ -21,25 +21,25 @@ export function setOnCameraToggleCallback(callback) {
 // Handler de tecla pressionada
 export function onKeyDown(e) {
   if (
-    e.code === "ArrowUp" ||
-    e.code === "ArrowDown" ||
-    e.code === "ArrowLeft" ||
-    e.code === "ArrowRight"
+    e.code === "KeyW" ||
+    e.code === "KeyS" ||
+    e.code === "KeyA" ||
+    e.code === "KeyD"
   ) {
     e.preventDefault();
   }
 
   switch (e.code) {
-    case "ArrowUp":
+    case "KeyW":
       input.forward = true;
       break;
-    case "ArrowDown":
+    case "KeyS":
       input.back = true;
       break;
-    case "ArrowLeft":
+    case "KeyA":
       input.left = true;
       break;
-    case "ArrowRight":
+    case "KeyD":
       input.right = true;
       break;
     case "KeyV":
@@ -82,25 +82,25 @@ export function consumeMouseDelta() {
 // Handler de tecla liberada
 export function onKeyUp(e) {
   if (
-    e.code === "ArrowUp" ||
-    e.code === "ArrowDown" ||
-    e.code === "ArrowLeft" ||
-    e.code === "ArrowRight"
+    e.code === "KeyW" ||
+    e.code === "KeyS" ||
+    e.code === "KeyA" ||
+    e.code === "KeyD"
   ) {
     e.preventDefault();
   }
 
   switch (e.code) {
-    case "ArrowUp":
+    case "KeyW":
       input.forward = false;
       break;
-    case "ArrowDown":
+    case "KeyS":
       input.back = false;
       break;
-    case "ArrowLeft":
+    case "KeyA":
       input.left = false;
       break;
-    case "ArrowRight":
+    case "KeyD":
       input.right = false;
       break;
   }

@@ -12,7 +12,7 @@ export async function loadCharacterWithAnimations(scene, objects, onObjectLoaded
       loadFBX(basePath + CONFIG.assets.characterWalkModel),
     ]);
 
-    console.log("FBXs carregados");
+    console.log("FBXs do Player carregados");
 
     const character = idleObj;
 

@@ -57,37 +57,12 @@ export function init() {
 
   // Cria o caminho de pedra
   createStonePath(scene);
+
   // Cria uma fileira de árvores à esquerda do caminho
-  createTreeRowFrom3DS(scene, {
-    modelPath: "./assets/models/Tree/Tree1.3ds",
-    startX: 0,
-    startZ: -15,
-    endX: 0,
-    endZ: 600,
-    offset: -30,
-    count: 20,
-    groundY: CONFIG.scene.groundPosition.y,
-    scaleMin: 3,
-    scaleMax: 4,
-    yOffset: 0.0,
-    randomYaw: 0.3,
-    modelRotation: { x: Math.PI / 2, y: -10.9, z: 0 },
-  });
+  createTreeRowFrom3DS(scene);
 
   // Adiciona bancos ao longo do caminho (direita)
-  createBenchesAlongPath(scene, {
-    modelPath: "./assets/models/Bench/Bench.fbx",
-    startX: -5,
-    startZ: 0,
-    endX: 0,
-    endZ: 600,
-    count: 10,
-    offset: 24,
-    side: "right",
-    scale: 0.1,
-    yOffset: 4.75,
-    modelRotation: { x: 0, y: 0, z: 0 },
-  });
+  createBenchesAlongPath(scene);
 
   renderer = new THREE.WebGLRenderer();
   renderer.shadowMap.enabled = CONFIG.shadows.enabled;

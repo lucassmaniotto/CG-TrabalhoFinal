@@ -18,41 +18,60 @@ function loadOptionalTexture(path) {
 
 // Cria uma fileira/linha de bancos ao longo de um caminho definido por start/end
 export async function createBenchesAlongPath(scene, options = {}, objects, onObjectLoadedCallback) {
+  const defaults = Object.assign({}, CONFIG.benches || {});
   const {
-    modelPath = "./assets/models/Bench/Bench.fbx",
-    count = 8,
-    startX = 0,
-    startZ = -15,
-    endX = 0,
-    endZ = 600,
-    offset = 20, // distância perpendicular do caminho
-    side = "right", // 'left' or 'right'
-    scale = 1.0,
-    yOffset = 0,
-    modelRotation = { x: 0, y: 0, z: 0 },
-  } = options;
+    modelPath = defaults.modelPath,
+    count = defaults.count,
+    startX = defaults.startX,
+    startZ = defaults.startZ,
+    endX = defaults.endX,
+    endZ = defaults.endZ,
+    offset = defaults.offset,
+    side = defaults.side,
+    scale = defaults.scale,
+    yOffset = defaults.yOffset,
+    modelRotation = defaults.modelRotation,
+  } = Object.assign({}, defaults, options);
 
   try {
     const object = await loadFBX(modelPath);
-    object.traverse((c) => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = false; } });
+    object.traverse((c) => {
+      if (c.isMesh) {
+        c.castShadow = true;
+        c.receiveShadow = false;
+      }
+    });
 
     // carregar texturas exatas fornecidas pelo usuário (nome fixo)
-    const baseTexDir = modelPath.substring(0, modelPath.lastIndexOf("/") + 1) + "textures/";
-    const baseColorPromise = loadOptionalTexture(baseTexDir + "Bench_Base_Color_4K.png");
-    const metalnessPromise = loadOptionalTexture(baseTexDir + "Bench_Metallic_4K.png");
-    const normalPromise = loadOptionalTexture(baseTexDir + "Bench_Normal_4K.png");
-    const roughnessPromise = loadOptionalTexture(baseTexDir + "Bench_Roughness_4K.png");
+    const baseTexDir =
+      defaults.texturesDir ||
+      modelPath.substring(0, modelPath.lastIndexOf("/") + 1) + "textures/";
+    const baseColorPromise = loadOptionalTexture(
+      baseTexDir + "Bench_Base_Color_4K.png"
+    );
+    const metalnessPromise = loadOptionalTexture(
+      baseTexDir + "Bench_Metallic_4K.png"
+    );
+    const normalPromise = loadOptionalTexture(
+      baseTexDir + "Bench_Normal_4K.png"
+    );
+    const roughnessPromise = loadOptionalTexture(
+      baseTexDir + "Bench_Roughness_4K.png"
+    );
 
-    const [baseColorTex, metalnessTex, normalTex, roughnessTex] = await Promise.all([
-      baseColorPromise,
-      metalnessPromise,
-      normalPromise,
-      roughnessPromise,
-    ]);
+    const [baseColorTex, metalnessTex, normalTex, roughnessTex] =
+      await Promise.all([
+        baseColorPromise,
+        metalnessPromise,
+        normalPromise,
+        roughnessPromise,
+      ]);
 
     // se existir baseColor, definir encoding correto
     if (baseColorTex) {
-      try { baseColorTex.encoding = THREE.sRGBEncoding; } catch (e) {}
+      try {
+        baseColorTex.encoding = THREE.sRGBEncoding;
+      } catch (e) {}
     }
 
     // cria material base apenas se alguma textura foi encontrada
@@ -75,7 +94,10 @@ export async function createBenchesAlongPath(scene, options = {}, objects, onObj
     // vetor perpendicular: à esquerda = (-dz, dx), à direita = (dz, -dx)
     let perpX = -dz;
     let perpZ = dx;
-    if (side === 'right') { perpX = -perpX; perpZ = -perpZ; }
+    if (side === "left") {
+      perpX = -perpX;
+      perpZ = -perpZ;
+    }
     const perpLen = Math.sqrt(perpX * perpX + perpZ * perpZ) || 1;
     const nx = perpX / perpLen;
     const nz = perpZ / perpLen;
@@ -113,16 +135,27 @@ export async function createBenchesAlongPath(scene, options = {}, objects, onObj
       const pathYaw = Math.atan2(dx, dz);
       clone.rotation.y += pathYaw + Math.PI; // virar para olhar para o centro do caminho
 
-      clone.position.set(x, (CONFIG.scene && CONFIG.scene.groundPosition ? CONFIG.scene.groundPosition.y : 0) + yOffset, z);
+      clone.position.set(
+        x,
+        (CONFIG.scene && CONFIG.scene.groundPosition
+          ? CONFIG.scene.groundPosition.y
+          : 0) + yOffset,
+        z
+      );
       scene.add(clone);
       instances.push(clone);
 
-      if (onObjectLoadedCallback) onObjectLoadedCallback('Bench', clone);
+      if (onObjectLoadedCallback) onObjectLoadedCallback("Bench", clone);
     }
 
-    if (objects) objects['benches'] = objects['benches'] ? objects['benches'].concat(instances) : instances;
-    console.log(`Instanciados ${instances.length} bancos a partir de ${modelPath}`);
+    if (objects)
+      objects["benches"] = objects["benches"]
+        ? objects["benches"].concat(instances)
+        : instances;
+    console.log(
+      `Instanciados ${instances.length} bancos a partir de ${modelPath}`
+    );
   } catch (err) {
-    console.error('Erro carregando Bench FBX:', err);
+    console.error("Erro carregando Bench FBX:", err);
   }
 }

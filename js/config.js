@@ -53,17 +53,63 @@ export const CONFIG = {
   // Configurações padrão para a função createTreeRowFrom3DS
   treeRow: {
     modelPath: "./assets/models/Tree/Tree1.3ds", // caminho do modelo
-    startX: 0,    // X do início do caminho
-    startZ: -15,  // Z do início do caminho
-    endX: 0,      // X do fim do caminho
-    endZ: 600,    // Z do fim do caminho
-    offset: 18,   // deslocamento lateral à esquerda do centro do caminho (use negativo para direita)
-    count: 10,    // número de árvores na fileira
-    groundY: { useConfigGround: true }, // se true usa CONFIG.scene.groundPosition.y, pode substituir por número
-    scaleMin: 0.85,
-    scaleMax: 1.05,
-    yOffset: 0.0,    // ajuste vertical adicional (se necessário)
-    randomYaw: 0.3,  // variação aleatória na rotação Y (radianos)
+    startX: 0,
+    startZ: -15,
+    endX: 0,
+    endZ: 600,
+    offset: -30, // deslocamento lateral (negativo para o outro lado do caminho)
+    count: 20, // número de árvores na fileira
+    // Use `null` para sinalizar ao loader que ele deve usar CONFIG.scene.groundPosition.y
+    groundY: null,
+    scaleMin: 3,
+    scaleMax: 4,
+    yOffset: 0.0, // ajuste vertical adicional (se necessário)
+    randomYaw: 0.3, // variação aleatória na rotação Y (radianos)
+    modelRotation: { x: Math.PI / 2, y: -10.9, z: 0 },
+  },
+
+  // Configurações do caminho de pedras
+  path: {
+    modelPath: "./assets/Floor/stonePath.jpg",
+    startX: 0,
+    startZ: -15,
+    endX: 0,
+    endZ: 620,
+    width: 55,
+    segments: 15,
+    repeatU: 5,
+    repeatV: 5,
+    // deslocamento vertical relativo ao `CONFIG.scene.groundPosition.y` (ex: 0.17 => -4.83 quando ground=-5)
+    groundYOffset: 0.17,
+  },
+
+  // Configurações para bancos ao longo do caminho
+  benches: {
+    modelPath: "./assets/models/Bench/Bench.fbx",
+    texturesDir: "./assets/models/Bench/textures/",
+    count: 10,
+    startX: -5,
+    startZ: 0,
+    endX: 0,
+    endZ: 600,
+    offset: 24,
+    side: "left",
+    scale: 0.1,
+    yOffset: 4.75,
+    modelRotation: { x: 0, y: 0, z: 0 },
+  },
+
+  // Configurações gerais para árvores (createTreesFrom3DS)
+  trees: {
+    modelPath: "./assets/models/Tree/Tree1.3ds",
+    texturesDir: "./assets/models/Tree/textures/",
+    count: 20,
+    areaWidth: 120,
+    areaDepth: 120,
+    groundY: { useConfigGround: true },
+    scaleMin: 0.8,
+    scaleMax: 1.2,
+    modelRotation: { x: 0, y: 0, z: 0 },
   },
 
   // Animações (índices no array de animações do FBX)

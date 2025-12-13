@@ -7,7 +7,7 @@ import {
   createTreeRowFrom3DS as _createTreeRowFrom3DS,
 } from "./loaders/trees3ds.js";
 
-export { loadGroundTexture, createStonePath } from "./loaders/ground.js";
+export { loadGroundTexture, createStonePath } from "./loaders/stonePath.js";
 import { createBenchesAlongPath as _createBenchesAlongPath } from "./loaders/bench.js";
 
 export const objects = {};
@@ -31,7 +31,8 @@ export function loadFBX(path) {
 export function loadTDS(path) {
   const loader = new TDSLoader();
   const base = path.substring(0, path.lastIndexOf("/") + 1);
-  loader.setResourcePath(base);
+  const texturesBase = base + "textures/";
+  loader.setResourcePath(texturesBase);
 
   return new Promise((resolve, reject) => {
     loader.load(

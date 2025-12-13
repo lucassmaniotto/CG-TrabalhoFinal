@@ -28,14 +28,18 @@ export function loadGroundTexture() {
 }
 
 export function createStonePath(scene, config = {}) {
+  const defaults = Object.assign({}, CONFIG.path || {});
   const {
-    startX = 0,
-    startZ = -15,
-    endX = 0,
-    endZ = 620,
-    width = 55,
-    segments = 15,
-    texturePath = "./assets/Floor/textura_pedra.jpg",
+    startX = defaults.startX,
+    startZ = defaults.startZ,
+    endX = defaults.endX,
+    endZ = defaults.endZ,
+    width = defaults.width,
+    segments = defaults.segments,
+    texturePath = defaults.modelPath,
+    repeatU = defaults.repeatU,
+    repeatV = defaults.repeatV,
+    groundYOffset = defaults.groundYOffset || 0,
   } = config;
 
   const stoneTexture = textureLoader.load(
@@ -43,7 +47,7 @@ export function createStonePath(scene, config = {}) {
     (tex) => {
       try { tex.encoding = THREE.sRGBEncoding; } catch (e) {}
       tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-      tex.repeat.set(5, 5);
+      tex.repeat.set(repeatU || 5, repeatV || 5);
     },
     undefined,
     (err) => { console.warn("Não foi possível carregar a textura do caminho de pedra", err); }
@@ -67,7 +71,8 @@ export function createStonePath(scene, config = {}) {
     const geometry = new THREE.BoxGeometry(width, 0.15, length);
     const mesh = new THREE.Mesh(geometry, stoneMaterial);
 
-    mesh.position.set((x1 + x2) / 2, -4.83, (z1 + z2) / 2);
+    const groundY = CONFIG.scene && CONFIG.scene.groundPosition ? CONFIG.scene.groundPosition.y : 0;
+    mesh.position.set((x1 + x2) / 2, groundY + groundYOffset, (z1 + z2) / 2);
     if (length > 0) {
       mesh.rotation.y = Math.atan2(dx, dz);
     }
