@@ -1,19 +1,6 @@
 import * as THREE from "three";
-import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { CONFIG } from "../config.js";
-
-// Helper para carrega um FBX e devolve uma Promise
-export function loadFBX(path) {
-  const fbxLoader = new FBXLoader();
-  return new Promise((resolve, reject) => {
-    fbxLoader.load(
-      path,
-      (object) => resolve(object),
-      undefined,
-      (error) => reject(error)
-    );
-  });
-}
+import { loadFBX } from "../loaders.js";
 
 // Implementação do carregamento do personagem (não fecha sobre `objects`/callback)
 export async function loadCharacterWithAnimations(scene, objects, onObjectLoadedCallback) {

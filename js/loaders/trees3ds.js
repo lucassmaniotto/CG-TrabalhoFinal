@@ -1,22 +1,5 @@
-import * as THREE from "three";
-import { TDSLoader } from "three/addons/loaders/TDSLoader.js";
 import { CONFIG } from "../config.js";
-
-// Helper para carregar um .3ds e devolver uma Promise
-export function loadTDS(path) {
-  const loader = new TDSLoader();
-  const base = path.substring(0, path.lastIndexOf("/") + 1);
-  loader.setResourcePath(base);
-
-  return new Promise((resolve, reject) => {
-    loader.load(
-      path,
-      (object) => resolve(object),
-      undefined,
-      (error) => reject(error)
-    );
-  });
-}
+import { loadTDS } from "../loaders.js";
 
 export async function createTreesFrom3DS(scene, options = {}, objects, onObjectLoadedCallback) {
   const {

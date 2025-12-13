@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { loadFBX } from "./fbx.js";
 import { CONFIG } from "../config.js";
+import { loadFBX } from "../loaders.js";
 
 const textureLoader = new THREE.TextureLoader();
 
@@ -15,9 +15,6 @@ function loadOptionalTexture(path) {
     );
   });
 }
-
-// tenta uma lista de candidatos e devolve a primeira textura carregada (ou null)
-// (removed: previously tried multiple candidate names) kept loader simple
 
 // Cria uma fileira/linha de bancos ao longo de um caminho definido por start/end
 export async function createBenchesAlongPath(scene, options = {}, objects, onObjectLoadedCallback) {
