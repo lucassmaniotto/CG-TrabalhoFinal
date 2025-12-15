@@ -42,11 +42,25 @@ export const CONFIG = {
 
   // Assets
   assets: {
+    // Texturas
     groundTexture: "./assets/Floor/grass.jpg",
+
+    // Player
     characterIdleModel: "Idle.fbx",
     characterWalkModel: "Walking.fbx",
     characterTexture: "./assets/models/Player/textures/",
     treeModel: "./assets/models/Tree/Tree1.3ds",
+
+    // NPCs
+    npc1WalkingModel: "./assets/models/NPCs/NPC1Walking.fbx",
+    npc2WalkingModel: "./assets/models/NPCs/NPC2Walking.fbx",
+  },
+
+  // Configuração de NPCs
+  npcs: {
+    scale: 0.105,
+    y: -4.8,
+    speed: 30,
   },
 
   // Configurações padrão para a função createTreeRowFrom3DS

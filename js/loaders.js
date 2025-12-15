@@ -1,6 +1,9 @@
-import { loadCharacterWithAnimations as _loadCharacterWithAnimations } from "./loaders/player.js";
 import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { TDSLoader } from "three/addons/loaders/TDSLoader.js";
+
+import { loadCharacterWithAnimations as _loadCharacterWithAnimations } from "./loaders/player.js";
+import { loadNPC1Walking as _loadNPC1Walking } from "./loaders/NPCs/npc1.js";
+import { loadNPC2Walking as _loadNPC2Walking } from "./loaders/NPCs/npc2.js";
 
 import {
   createTreesFrom3DS as _createTreesFrom3DS,
@@ -55,9 +58,19 @@ export function loadCharacterWithAnimations(scene) {
   return _loadCharacterWithAnimations(scene, objects, onObjectLoadedCallback);
 }
 
+export function loadNPC1Walking(scene) {
+  return _loadNPC1Walking(scene, objects, onObjectLoadedCallback);
+}
+
+export function loadNPC2Walking(scene) {
+  return _loadNPC2Walking(scene, objects, onObjectLoadedCallback);
+}
+
 // Carrega todos os objetos da cena
 export function loadAllObjects(scene) {
   loadCharacterWithAnimations(scene);
+  loadNPC1Walking(scene);
+  loadNPC2Walking(scene);
 }
 
 export function createTreesFrom3DS(scene, options = {}) {

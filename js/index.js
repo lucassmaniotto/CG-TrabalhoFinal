@@ -27,6 +27,7 @@ import {
 import * as CameraModule from "./camera.js";
 import * as AnimationModule from "./animation.js";
 import { updateCharacterMovement } from "./characterMovement.js";
+import { registerWalkingNPC, updateNPCSystem } from "./npcSystem.js";
 
 // Variáveis globais
 let scene, renderer;
@@ -83,6 +84,18 @@ export function init() {
       AnimationModule.initAnimationMixer(object);
       CameraModule.setFollowTarget(object); // câmera segue o personagem
     }
+
+    if (objName.toLowerCase() === "npc1") {
+      registerWalkingNPC(object, {
+        direction: 1, // vai do início ao fim
+      });
+    }
+
+    if (objName.toLowerCase() === "npc2") {
+      registerWalkingNPC(object, {
+        direction: -1, // vem do fim em direção ao player
+      });
+    }
   });
 
   // Setup de callbacks para input
@@ -116,8 +129,11 @@ function animate() {
   // Atualiza animações
   AnimationModule.updateAnimations(delta);
 
+  // Atualiza animação + movimento dos NPCs
+  updateNPCSystem(delta);
+
   // Atualiza movimento do personagem
-    const character = objects["player"];
+  const character = objects["player"];
   updateCharacterMovement(character, delta);
 
   // Atualiza orientação da câmera via mouse
