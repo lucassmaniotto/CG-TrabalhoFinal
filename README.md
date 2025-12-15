@@ -4,11 +4,7 @@
 - **Nomes:** Lucas Smaniotto Schuch | Valtemir Junior
 - **Matrículas:** 2121101016 | 
 
-## Controles de Iluminação
-- Implementadas luzes direcionais, pontuais e spotlights, cada uma com seus respectivos controles na GUI.
-- Adicionado Helper para facilitar a visualização dos pontos focais das luzes.
-
-## Controles do Objeto
+## Controles do Player
 ### Controles de movimento
 - Cada tecla altera a posição X:
 
@@ -31,3 +27,7 @@ V: alterna entre visão em primeira e terceira pessoa
 ### Animações do personagem
 - Modelo usa dois FBX separados (Idle.fbx e Walking.fbx).
 - Parado: toca animação Idle. Em movimento: toca animação Walking.
+
+## Iluminação e Ciclo Dia/Noite
+- Iluminação direcional simulando o sol utilizando DirectionalLight do Three.js para ciclo dia/noite.
+- PointLight para simular luz ambiente nos objetos de Poste de Luz.

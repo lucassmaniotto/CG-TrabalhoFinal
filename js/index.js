@@ -128,7 +128,7 @@ function animate() {
   CameraModule.updateCameraPosition();
 
   // Atualiza helpers de luz
-  updateLightHelpers();
+  updateLightHelpers(delta);
 
   // Renderiza
   renderer.render(scene, CameraModule.getCamera());

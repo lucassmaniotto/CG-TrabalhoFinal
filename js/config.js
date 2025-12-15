@@ -38,7 +38,7 @@ export const CONFIG = {
     backgroundColor: 0x87ceeb,
     ambientLightIntensity: 0.3,
     groundPosition: { x: 0, y: -5, z: 0 },
-    groundSize: 20000,
+    groundSize: 5000,
   },
 
   // Assets
@@ -129,6 +129,21 @@ export const CONFIG = {
     modelRotation: { x: 0, y: 0, z: 0 },
   },
 
+  // Iluminação (ciclo dia/noite)
+  lighting: {
+    directional: {
+      helper: true,
+      x: 200,
+      y: 0,
+      z: 0,
+      intensity: 0.5,
+      color: 0xffffff,
+    },
+    ambient: {
+      dayNightDurationSeconds: 120,
+    },
+  },
+
   // Animações (índices no array de animações do FBX)
   animations: {
     idle: 0,
@@ -140,6 +155,6 @@ export const CONFIG = {
     enabled: true,
     type: "PCFSoftShadowMap",
     mapSize: 2048,
-    shadowCameraSize: 400,
+    shadowCameraSize: 700,
   },
 };
