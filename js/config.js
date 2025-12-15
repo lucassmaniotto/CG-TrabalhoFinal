@@ -35,7 +35,6 @@ export const CONFIG = {
 
   // Cena
   scene: {
-    backgroundColor: 0x87ceeb,
     ambientLightIntensity: 0.3,
     groundPosition: { x: 0, y: -5, z: 0 },
     groundSize: 5000,
@@ -146,14 +145,11 @@ export const CONFIG = {
   lighting: {
     directional: {
       helper: true,
-      x: 200,
+      x: 500,
       y: 0,
       z: 0,
-      intensity: 0.5,
+      intensity: 2,
       color: 0xffffff,
-    },
-    ambient: {
-      dayNightDurationSeconds: 120,
     },
   },
 

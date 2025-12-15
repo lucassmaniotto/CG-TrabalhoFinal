@@ -37,7 +37,6 @@ export function init() {
   const camera = CameraModule.initCamera(window.innerWidth, window.innerHeight);
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(CONFIG.scene.backgroundColor);
   scene.add(
     new THREE.AmbientLight(0xffffff, CONFIG.scene.ambientLightIntensity)
   );

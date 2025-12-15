@@ -78,7 +78,7 @@ export function createStonePath(scene, config = {}) {
     }
 
     mesh.receiveShadow = true;
-    mesh.castShadow = true;
+    mesh.castShadow = false;
     scene.add(mesh);
   }
 
