@@ -103,7 +103,6 @@ export const CONFIG = {
     modelPath: "./assets/models/StreetLamp/street_lamp.fbx",
     texturesDir: "./assets/models/StreetLamp/textures/",
     count: 5,
-    // acompanha o caminho de pedras
     startX: 0,
     startZ: 0,
     endX: 0,
@@ -112,8 +111,22 @@ export const CONFIG = {
     side: "right",
     scale: 1,
     yOffset: 0,
-    // ajuste conforme necessário para o seu FBX
     modelRotation: { x: 0, y: 0, z: 0 },
+
+    // Luz do poste
+    light: {
+      color: 0xffffff,
+      intensity: 1000,
+      distance: 250,
+      decay: 2,
+      shadow: {
+        mapSize: 1024,
+        near: 0.5,
+        bias: -0.0002,
+        normalBias: 0.02,
+      },
+      helper: true,
+    },
   },
 
   // Configurações gerais para árvores (createTreesFrom3DS)

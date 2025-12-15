@@ -165,21 +165,28 @@ export async function createStreetLampsAlongPath(
       const topWorld = new THREE.Vector3(bboxCenter.x + 2, bbox.max.y - 19, bboxCenter.z);
       const topLocal = clone.worldToLocal(topWorld.clone());
 
-      const lampLight = new THREE.PointLight(0xffffff, 1000);
+      const lightCfg = defaults.light;
+      const shadowCfg = lightCfg.shadow;
+
+      const lampLight = new THREE.PointLight(lightCfg.color, lightCfg.intensity);
       lampLight.castShadow = true;
-      // Limita o alcance para não matar contraste das sombras na cena inteira
-      lampLight.distance = 250;
-      lampLight.decay = 2;
-      lampLight.shadow.mapSize.set(1024, 1024);
-      lampLight.shadow.camera.near = 0.5;
+
+      lampLight.distance = lightCfg.distance;
+      lampLight.decay = lightCfg.decay;
+
+      const mapSize = shadowCfg.mapSize;
+      lampLight.shadow.mapSize.set(mapSize, mapSize);
+      lampLight.shadow.camera.near = shadowCfg.near;
       lampLight.shadow.camera.far = lampLight.distance;
-      lampLight.shadow.bias = -0.0002;
-      lampLight.shadow.normalBias = 0.02;
+      lampLight.shadow.bias = shadowCfg.bias;
+      lampLight.shadow.normalBias = shadowCfg.normalBias;
       lampLight.position.copy(topLocal);
       clone.add(lampLight);
 
-      const lampHelper = new THREE.PointLightHelper(lampLight);
-      scene.add(lampHelper);
+      if (lightCfg.helper !== false) {
+        const lampHelper = new THREE.PointLightHelper(lampLight);
+        scene.add(lampHelper);
+      }
 
       scene.add(clone);
       instances.push(clone);
