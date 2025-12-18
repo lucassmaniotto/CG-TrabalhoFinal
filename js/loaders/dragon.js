@@ -45,7 +45,6 @@ function pickIdleClip(clips, preferredIndex = null) {
 
 function getCorralCenter() {
   const c = CONFIG.corral;
-  if (!c) return { x: 0, z: 0 };
   return {
     x: (c.xMin + c.xMax) / 2,
     z: (c.zMin + c.zMax) / 2,
@@ -57,7 +56,7 @@ export function loadDragon(scene, objects, onObjectLoadedCallback) {
     CONFIG.dragon;
 
   const loader = new FBXLoader();
-  if (texturesDir) loader.setResourcePath(texturesDir);
+  loader.setResourcePath(texturesDir);
 
   return new Promise((resolve, reject) => {
     loader.load(
@@ -65,16 +64,15 @@ export function loadDragon(scene, objects, onObjectLoadedCallback) {
       (dragon) => {
         const applyAndResolve = async () => {
           const { x, z } = getCorralCenter();
-          const groundY = CONFIG.corral?.groundY ?? CONFIG.character.basePosition.y;
+          const groundY = CONFIG.corral.groundY;
 
           dragon.visible = true;
-          dragon.position.set(x, groundY + (yOffset || 0), z);
-          const safeScale = typeof scale === "number" && scale > 0 ? scale : 0.01;
-          dragon.scale.set(safeScale, safeScale, safeScale);
-          dragon.rotation.y = rotationY || 0;
+          dragon.position.set(x, groundY + yOffset, z);
+          dragon.scale.set(scale, scale, scale);
+          dragon.rotation.y = rotationY;
 
           // Texturas fornecidas (evita dragão preto quando FBX não referencia corretamente)
-          const base = texturesDir || "";
+          const base = texturesDir;
           const [diffuseRes, bumpRes, norRes, norMirrorRes] =
             await Promise.allSettled([
               loadTextureAsync(base + "Dragon_ground_color.jpg"),
@@ -83,14 +81,15 @@ export function loadDragon(scene, objects, onObjectLoadedCallback) {
               loadTextureAsync(base + "Dragon_Nor_mirror2.jpg"),
             ]);
 
-          const diffuseTex = diffuseRes.status === "fulfilled" ? diffuseRes.value : null;
+          const diffuseTex =
+            diffuseRes.status === "fulfilled" ? diffuseRes.value : null;
           const bumpTex = bumpRes.status === "fulfilled" ? bumpRes.value : null;
           const normalTex =
             norRes.status === "fulfilled"
               ? norRes.value
               : norMirrorRes.status === "fulfilled"
-                ? norMirrorRes.value
-                : null;
+              ? norMirrorRes.value
+              : null;
 
           setSRGB(diffuseTex);
 

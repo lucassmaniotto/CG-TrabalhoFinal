@@ -42,8 +42,12 @@ function placeOnGround(object, groundY) {
 }
 
 function asRadians(value) {
-  if (typeof value !== "number") return 0;
-  return Math.abs(value) > Math.PI * 2 ? THREE.MathUtils.degToRad(value) : value;
+  if (typeof value !== "number") {
+    throw new TypeError("Expected a number (degrees or radians)");
+  }
+  return Math.abs(value) > Math.PI * 2
+    ? THREE.MathUtils.degToRad(value)
+    : value;
 }
 
 export async function loadHorses(scene, objects, onObjectLoadedCallback) {
@@ -60,17 +64,9 @@ export async function loadHorses(scene, objects, onObjectLoadedCallback) {
   const bounds = cfg.lastCorralBounds;
   const center = computeCenter(bounds);
 
-  const groundY =
-    typeof cfg.groundY === "number" ? cfg.groundY : CONFIG.scene.groundPosition.y;
-
-  const placements = cfg.placements || [];
-  const count = typeof cfg.count === "number" && cfg.count > 0 ? cfg.count : 3;
-
-  const defaultPlacements = [
-    { dx: -30, dz: -40, rz: 0 },
-    { dx: 0, dz: -15, rz: 0 },
-    { dx: 25, dz: 20, rz: 0 },
-  ];
+  const groundY = cfg.groundY;
+  const placements = cfg.placements;
+  const count = cfg.count;
 
   const horses = [];
   for (let i = 0; i < count; i++) {
@@ -83,19 +79,18 @@ export async function loadHorses(scene, objects, onObjectLoadedCallback) {
       }
     });
 
-    const p = placements[i] || defaultPlacements[i] || { dx: 0, dz: 0, rz: 0 };
-    const { dx, dz, rz, ry } = p;
+    const p = placements[i];
+    const { dx, dz, rz } = p;
 
     inst.position.set(center.x + dx, groundY, center.z + dz);
 
-    const s = typeof cfg.scale === "number" ? cfg.scale : 0.05;
-    inst.scale.set(s, s, s);
+    inst.scale.set(cfg.scale, cfg.scale, cfg.scale);
 
-    const baseRot = cfg.modelRotation || { x: 0, y: 0, z: 0 };
-    inst.rotation.set(baseRot.x || 0, baseRot.y || 0, baseRot.z || 0);
+    const baseRot = cfg.modelRotation;
+    inst.rotation.set(baseRot.x, baseRot.y, baseRot.z);
 
-    // Mantém padrão do macaco: rotação por instância em Z (fallback em `ry`)
-    inst.rotation.z += asRadians(typeof rz === "number" ? rz : ry);
+    // Mantém padrão do macaco: rotação por instância em Z
+    inst.rotation.z += asRadians(rz);
 
     placeOnGround(inst, groundY);
 

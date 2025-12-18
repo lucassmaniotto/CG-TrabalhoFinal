@@ -70,8 +70,32 @@ export const CONFIG = {
     xMax: -29.75,
     zMin: 1,
     zMax: 617,
-    // Use `null` para usar CONFIG.character.basePosition.y
-    groundY: null,
+    groundY: -4.8,
+  },
+
+  // Configuração das cercas (OBJ + MTL)
+  fence: {
+    objPath:
+      "./assets/models/Fence/13080_Wrought_Iron_fence_with_brick_v1_L2.obj",
+    mtlPath:
+      "./assets/models/Fence/13080_Wrought_Iron_fence_with_brick_v1_L2.mtl",
+    texturesDir: "./assets/models/Fence/textures/",
+
+    scale: 0.1,
+    y: 16.5,
+
+    // Ajuste de encaixe entre módulos:
+    // 1.0 = encosta (bounding box), < 1 aproxima (fecha vãos), > 1 abre gap
+    stepMultiplier: 0.78,
+
+    // Remove N peças por fileira (evita sobra em vértices)
+    trimPerRow: 1,
+
+    // Quantas fileiras horizontais (ao longo do X) terá o cercado
+    horizontalRows: 4,
+
+    // Encaixe dos cantos nas fileiras horizontais (Z)
+    horizontalEndInsetFactor: 0.55,
   },
 
   // Configuração do Dragão
@@ -93,7 +117,7 @@ export const CONFIG = {
 
     count: 8,
     scale: 0.1,
-    groundY: null,
+    groundY: -5,
 
     // Rotação base do modelo (OBJ exportado do 3ds/Max costuma precisar de ajuste)
     modelRotation: { x: -Math.PI / 2, y: 0, z: 0 },
@@ -103,7 +127,8 @@ export const CONFIG = {
       xMin: -172,
       xMax: -29.75,
       zMin: 1,
-      zMax: 206.6,
+      // Divisão simétrica do cercado em 4 fileiras (zMin..zMax)
+      zMax: 206.33,
     },
 
     // Offsets relativos ao centro do primeiro cercado
@@ -127,17 +152,18 @@ export const CONFIG = {
 
     count: 3,
     scale: 0.015,
-    groundY: null,
+    groundY: -5,
 
     // Normalmente OBJ do 3dsMax precisa desse ajuste
     modelRotation: { x: -Math.PI / 2, y: 0, z: 0 },
 
     // Último cercado: faixa final do retângulo (derivada de js/loaders/fence.js)
-    // z entre createFence3 (413.23) e createFence4 (620), com laterais indo até 617
+    // z entre as faixas finais do cercado (413.23) e (620), com laterais indo até 617
     lastCorralBounds: {
       xMin: -172,
       xMax: -29.75,
-      zMin: 413.23,
+      // Divisão simétrica do cercado em 4 fileiras (zMin..zMax)
+      zMin: 411.67,
       zMax: 617,
     },
 
@@ -224,7 +250,7 @@ export const CONFIG = {
         bias: -0.0002,
         normalBias: 0.02,
       },
-      helper: true,
+      helper: false,
     },
   },
 
@@ -244,7 +270,7 @@ export const CONFIG = {
   // Iluminação (ciclo dia/noite)
   lighting: {
     directional: {
-      helper: true,
+      helper: false,
       x: 500,
       y: 0,
       z: 0,
