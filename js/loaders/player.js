@@ -2,11 +2,16 @@ import * as THREE from "three";
 import { CONFIG } from "../config.js";
 import { loadFBX } from "../loaders.js";
 
-// Implementação do carregamento do personagem (não fecha sobre `objects`/callback)
+// Carrega o personagem com animações:
+// - carrega dois FBXs (idle e walk)
+// - usa o modelo do idle como "corpo" principal
+// - junta os clips de animação dos dois arquivos em `character.animations`
+// - cria `userData.clipMap` para o sistema de animação/movimento
 export async function loadCharacterWithAnimations(scene, objects, onObjectLoadedCallback) {
   const basePath = "./assets/models/Player/";
 
   try {
+    // Carrega em paralelo os FBXs de idle e walk
     const [idleObj, walkObj] = await Promise.all([
       loadFBX(basePath + CONFIG.assets.characterIdleModel),
       loadFBX(basePath + CONFIG.assets.characterWalkModel),
@@ -14,6 +19,7 @@ export async function loadCharacterWithAnimations(scene, objects, onObjectLoaded
 
     console.log("FBXs do Player carregados");
 
+    // Modelo base que será inserido na cena
     const character = idleObj;
 
     const scale = CONFIG.character.baseScale;
@@ -21,10 +27,12 @@ export async function loadCharacterWithAnimations(scene, objects, onObjectLoaded
     const rotation = CONFIG.character.baseRotation;
 
     try {
+      // Transformações base do personagem
       character.scale.set(scale, scale, scale);
       character.position.set(position.x, position.y, position.z);
       character.rotation.set(rotation.x, rotation.y, rotation.z);
 
+      // Configura sombras nas malhas
       character.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           child.castShadow = true;
@@ -35,10 +43,12 @@ export async function loadCharacterWithAnimations(scene, objects, onObjectLoaded
       console.warn("Erro aplicando transformações ao personagem FBX:", e);
     }
 
-    const idleClips = idleObj.animations || [];
-    const walkClips = walkObj.animations || [];
+    // Extrai clips de cada FBX e combina em uma lista única
+    const idleClips = idleObj.animations;
+    const walkClips = walkObj.animations;
 
     character.animations = [...idleClips, ...walkClips];
+    // Mapa de animações usado por outros módulos (ex: characterMovement/animation)
     character.userData.clipMap = {
       idle: idleClips[0] || null,
       walk: walkClips[0] || null,
@@ -53,9 +63,11 @@ export async function loadCharacterWithAnimations(scene, objects, onObjectLoaded
       }
     );
 
+    // Adiciona à cena e registra no dicionário global
     scene.add(character);
     if (objects) objects["player"] = character;
 
+    // Callback opcional (ex: setFollowTarget / initAnimationMixer)
     if (onObjectLoadedCallback) {
       onObjectLoadedCallback("Player", character);
     }

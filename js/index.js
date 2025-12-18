@@ -8,14 +8,8 @@ import {
   loadAllObjects,
   setOnObjectLoadedCallback,
   objects,
-  createStonePath,
-  createBenchesAlongPath,
-  createStreetLampsAlongPath,
-  createTreesFrom3DS,
-  createTreeRowFrom3DS,
 } from "./loaders.js";
 import {
-  input,
   onKeyDown,
   onKeyUp,
   setOnCameraToggleCallback,
@@ -35,7 +29,7 @@ const clock = new THREE.Clock();
 
 // Inicialização
 export function init() {
-  const camera = CameraModule.initCamera(window.innerWidth, window.innerHeight);
+  CameraModule.initCamera(window.innerWidth, window.innerHeight);
 
   scene = new THREE.Scene();
   scene.add(
@@ -55,18 +49,6 @@ export function init() {
   );
   ground.receiveShadow = true;
   scene.add(ground);
-
-  // Cria o caminho de pedra
-  createStonePath(scene);
-
-  // Cria uma fileira de árvores à esquerda do caminho
-  createTreeRowFrom3DS(scene);
-
-  // Adiciona bancos ao longo do caminho (direita)
-  createBenchesAlongPath(scene);
-
-  // Adiciona 5 postes ao longo do caminho (direita)
-  createStreetLampsAlongPath(scene);
 
   renderer = new THREE.WebGLRenderer();
   renderer.shadowMap.enabled = CONFIG.shadows.enabled;

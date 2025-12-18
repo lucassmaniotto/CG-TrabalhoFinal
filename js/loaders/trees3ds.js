@@ -4,7 +4,7 @@ import * as THREE from "three";
 
 const textureLoader = new THREE.TextureLoader();
 
-// tenta carregar uma textura e retorna null em caso de erro
+// Tenta carregar uma textura e retorna null em caso de erro
 function loadOptionalTexture(path) {
   return new Promise((resolve) => {
     textureLoader.load(
@@ -16,7 +16,7 @@ function loadOptionalTexture(path) {
   });
 }
 
-// configura sombras para malhas do objeto
+// Configura sombras para malhas do objeto
 function setMeshShadows(object) {
   object.traverse((c) => {
     if (c.isMesh) {
@@ -26,7 +26,7 @@ function setMeshShadows(object) {
   });
 }
 
-// carrega as três texturas usadas pelas árvores (caso existam)
+// Carrega as três texturas usadas pelas árvores (caso existam)
 async function loadTreeTextures(baseTexDir) {
   const barkPromise = loadOptionalTexture(baseTexDir + "bark_loo.jpg");
   const leafColorPromise = loadOptionalTexture(baseTexDir + "blatt1.jpg");
@@ -52,7 +52,7 @@ async function loadTreeTextures(baseTexDir) {
   return { barkTex, leafColorTex, leafAlphaTex };
 }
 
-// cria materiais a partir das texturas carregadas
+// Cria materiais a partir das texturas carregadas
 function createTreeMaterials({ barkTex, leafColorTex, leafAlphaTex }) {
   let trunkMaterial = null;
   let leafMaterial = null;
@@ -69,105 +69,6 @@ function createTreeMaterials({ barkTex, leafColorTex, leafAlphaTex }) {
     if (leafAlphaTex) leafMaterial.alphaTest = 0.5;
   }
   return { trunkMaterial, leafMaterial };
-}
-
-// aplica materiais detectando folhas por nome/material
-function applyMaterialsToClone(clone, trunkMaterial, leafMaterial) {
-  if (!trunkMaterial && !leafMaterial) return;
-  clone.traverse((m) => {
-    if (!m.isMesh) return;
-    const name = (m.name || "").toLowerCase();
-    const matName =
-      m.material && m.material.name ? m.material.name.toLowerCase() : "";
-    const isLeaf = name.includes("blatt") || matName.includes("blatt");
-    if (isLeaf && leafMaterial) {
-      m.material = leafMaterial.clone();
-    } else if (!isLeaf && trunkMaterial) {
-      m.material = trunkMaterial.clone();
-    } else if (leafMaterial && !trunkMaterial) {
-      m.material = leafMaterial.clone();
-    } else if (trunkMaterial && !leafMaterial) {
-      m.material = trunkMaterial.clone();
-    }
-  });
-}
-
-export async function createTreesFrom3DS(
-  scene,
-  options = {},
-  objects,
-  onObjectLoadedCallback
-) {
-  const defaults = Object.assign({}, CONFIG.trees || {});
-  const {
-    modelPath = defaults.modelPath,
-    count = defaults.count,
-    areaWidth = defaults.areaWidth,
-    areaDepth = defaults.areaDepth,
-    groundY = typeof defaults.groundY === "number"
-      ? defaults.groundY
-      : CONFIG.scene && CONFIG.scene.groundPosition
-      ? CONFIG.scene.groundPosition.y
-      : 0,
-    avoidArea = null,
-    scaleMin = defaults.scaleMin,
-    scaleMax = defaults.scaleMax,
-    modelRotation = defaults.modelRotation,
-  } = Object.assign({}, defaults, options);
-
-  try {
-    const object = await loadTDS(modelPath);
-    setMeshShadows(object);
-
-    const baseTexDir =
-      defaults.texturesDir ||
-      modelPath.substring(0, modelPath.lastIndexOf("/") + 1) + "textures/";
-
-    const textures = await loadTreeTextures(baseTexDir);
-    const { trunkMaterial, leafMaterial } = createTreeMaterials(textures);
-
-    const instances = [];
-    for (let i = 0; i < count; i++) {
-      const x = (Math.random() - 0.5) * areaWidth;
-      const z = (Math.random() - 0.5) * areaDepth;
-
-      if (avoidArea) {
-        const dx = x - (avoidArea.x || 0);
-        const dz = z - (avoidArea.z || 0);
-        if (Math.sqrt(dx * dx + dz * dz) < (avoidArea.radius || 0)) {
-          i--;
-          continue;
-        }
-      }
-
-      const clone = object.clone(true);
-      const s = scaleMin + Math.random() * (scaleMax - scaleMin);
-      clone.scale.set(s, s, s);
-      if (modelRotation) {
-        clone.rotation.x += modelRotation.x || 0;
-        clone.rotation.y += modelRotation.y || 0;
-        clone.rotation.z += modelRotation.z || 0;
-      }
-      clone.position.set(x, groundY, z);
-      clone.rotation.y += Math.random() * Math.PI * 2;
-      applyMaterialsToClone(clone, trunkMaterial, leafMaterial);
-
-      scene.add(clone);
-      instances.push(clone);
-
-      if (onObjectLoadedCallback) {
-        onObjectLoadedCallback("Tree", clone);
-      }
-    }
-
-    if (objects)
-      objects["trees"] = objects["trees"]
-        ? objects["trees"].concat(instances)
-        : instances;
-    console.log(`Instanciadas ${count} árvores a partir de ${modelPath}`);
-  } catch (err) {
-    console.error("Erro carregando .3ds:", err);
-  }
 }
 
 export async function createTreeRowFrom3DS(

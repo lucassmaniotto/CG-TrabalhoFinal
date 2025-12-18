@@ -24,8 +24,8 @@ export function registerWalkingNPC(object, options = {}) {
 
   // Mixer próprio
   const mixer = new THREE.AnimationMixer(object);
-  const clips = object.animations || [];
-  const walkClip = object.userData?.clipMap?.walk || clips[0] || null;
+  const clips = object.animations;
+  const walkClip = clips[0];
   let action = null;
   if (walkClip) {
     action = mixer.clipAction(walkClip);
@@ -39,8 +39,7 @@ export function registerWalkingNPC(object, options = {}) {
   object.position.y = yFixed;
 
   // Mantém o X inicial do NPC (pré-setado no loader)
-  const fixedX =
-    typeof options.fixedX === "number" ? options.fixedX : object.position.x;
+  const fixedX = object.position.x;
   object.position.x = fixedX;
 
   npcEntries.push({

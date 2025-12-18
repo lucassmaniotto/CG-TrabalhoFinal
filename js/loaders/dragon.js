@@ -4,6 +4,7 @@ import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { CONFIG } from "../config.js";
 import { addExternalMixer } from "../animation.js";
 
+// Carrega uma textura via Promise (para podermos usar async/await e tratar falhas)
 function loadTextureAsync(url) {
   const textureLoader = new THREE.TextureLoader();
   return new Promise((resolve, reject) => {
@@ -11,6 +12,7 @@ function loadTextureAsync(url) {
   });
 }
 
+// Garante que texturas de cor (albedo/diffuse) sejam interpretadas como sRGB
 function setSRGB(tex) {
   if (!tex) return;
   try {
@@ -22,6 +24,7 @@ function setSRGB(tex) {
   }
 }
 
+// Força o material a ser renderizável mesmo se o FBX vier com flags “estranhas”
 function forceMaterialRenderable(material) {
   if (!material) return;
 
@@ -35,6 +38,7 @@ function forceMaterialRenderable(material) {
   material.needsUpdate = true;
 }
 
+// Escolhe um clip de animação idle, preferindo por índice (se passado) ou por nome
 function pickIdleClip(clips, preferredIndex = null) {
   if (!clips || !clips.length) return null;
   if (typeof preferredIndex === "number" && clips[preferredIndex]) {
@@ -43,6 +47,7 @@ function pickIdleClip(clips, preferredIndex = null) {
   return clips.find((c) => /idle/i.test(c.name)) || clips[0];
 }
 
+// Centro do cercado onde o dragão deve ficar posicionado
 function getCorralCenter() {
   const c = CONFIG.corral;
   return {
@@ -51,6 +56,12 @@ function getCorralCenter() {
   };
 }
 
+// Loader do dragão:
+// 1) carrega o FBX
+// 2) aplica posição/escala/rotação
+// 3) tenta carregar texturas fornecidas (corrige FBX sem referências corretas)
+// 4) substitui materiais por MeshStandardMaterial
+// 5) inicia animação idle (se existir)
 export function loadDragon(scene, objects, onObjectLoadedCallback) {
   const { modelPath, texturesDir, scale, rotationY, yOffset, idleIndex } =
     CONFIG.dragon;
@@ -62,16 +73,19 @@ export function loadDragon(scene, objects, onObjectLoadedCallback) {
     loader.load(
       modelPath,
       (dragon) => {
+        // Encapsula o pós-processamento em async para usar await nas texturas
         const applyAndResolve = async () => {
           const { x, z } = getCorralCenter();
           const groundY = CONFIG.corral.groundY;
 
+          // Transformações base do modelo
           dragon.visible = true;
           dragon.position.set(x, groundY + yOffset, z);
           dragon.scale.set(scale, scale, scale);
           dragon.rotation.y = rotationY;
 
-          // Texturas fornecidas (evita dragão preto quando FBX não referencia corretamente)
+          // Texturas fornecidas (evita dragão preto quando o FBX não referencia corretamente)
+          // Obs: usamos allSettled para não falhar o carregamento do dragão se uma textura faltar.
           const base = texturesDir;
           const [diffuseRes, bumpRes, norRes, norMirrorRes] =
             await Promise.allSettled([
@@ -93,9 +107,11 @@ export function loadDragon(scene, objects, onObjectLoadedCallback) {
 
           setSRGB(diffuseTex);
 
+          // Substitui materiais do FBX por um material PBR consistente
           dragon.traverse((child) => {
             if (!(child instanceof THREE.Mesh)) return;
             child.visible = true;
+            // Evita o modelo "sumir" por frustum culling quando bounding box vem ruim do FBX
             child.frustumCulled = false;
             child.castShadow = true;
             child.receiveShadow = false;
@@ -114,18 +130,22 @@ export function loadDragon(scene, objects, onObjectLoadedCallback) {
             forceMaterialRenderable(child.material);
           });
 
+          // Atualiza matrizes após mudar materiais/transformações
           dragon.updateMatrixWorld(true);
 
+          // Animação: tenta tocar um idle; se não existir, o dragão fica estático
           const clips = dragon.animations || [];
           const idleClip = pickIdleClip(clips, idleIndex);
           if (idleClip) {
             const mixer = new THREE.AnimationMixer(dragon);
+            // Registra o mixer no sistema global de animação para ser atualizado no loop
             addExternalMixer(mixer);
             mixer.clipAction(idleClip).reset().play();
           } else {
             console.warn("Dragão carregado sem AnimationClips.");
           }
 
+          // Adiciona na cena e registra no dicionário global de objetos
           scene.add(dragon);
           if (objects) objects["dragon"] = dragon;
           if (onObjectLoadedCallback) onObjectLoadedCallback("Dragon", dragon);

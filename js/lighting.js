@@ -73,7 +73,7 @@ function updateSkyBackground() {
   skyColor.lerpColors(fromStop.colorValue, toStop.colorValue, segmentT);
 }
 
-// Inicializa iluminação (sem GUI) + ciclo de dia/noite
+// Inicializa iluminação + ciclo de dia/noite
 export function initLighting(scene) {
   const cfg = CONFIG.lighting && CONFIG.lighting.directional;
 

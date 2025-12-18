@@ -2,25 +2,26 @@ import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { TDSLoader } from "three/addons/loaders/TDSLoader.js";
 import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
 import { MTLLoader } from "three/addons/loaders/MTLLoader.js";
-
 import { loadCharacterWithAnimations as _loadCharacterWithAnimations } from "./loaders/player.js";
 import { loadNPC1Walking as _loadNPC1Walking } from "./loaders/NPCs/npc1.js";
 import { loadNPC2Walking as _loadNPC2Walking } from "./loaders/NPCs/npc2.js";
 import { loadDragon as _loadDragon } from "./loaders/dragon.js";
 import { loadMonkeys as _loadMonkeys } from "./loaders/monkey.js";
 import { loadHorses as _loadHorses } from "./loaders/horse.js";
-
 import {
-  createTreesFrom3DS as _createTreesFrom3DS,
   createTreeRowFrom3DS as _createTreeRowFrom3DS,
 } from "./loaders/trees3ds.js";
-
-export { loadGroundTexture, createStonePath } from "./loaders/stonePath.js";
+import {
+  loadGroundTexture as _loadGroundTexture,
+  createStonePath as _createStonePath,
+} from "./loaders/stonePath.js";
 import { createBenchesAlongPath as _createBenchesAlongPath } from "./loaders/bench.js";
 import { createStreetLampsAlongPath as _createStreetLampsAlongPath } from "./loaders/streetLamp.js";
 import { createFence as _createFence } from "./loaders/fence.js";
 
 export const objects = {};
+export const loadGroundTexture = _loadGroundTexture;
+export const createStonePath = _createStonePath;
 
 let onObjectLoadedCallback = null;
 
@@ -118,21 +119,6 @@ export function loadHorses(scene) {
   return _loadHorses(scene, objects, onObjectLoadedCallback);
 }
 
-// Carrega todos os objetos da cena
-export function loadAllObjects(scene) {
-  loadCharacterWithAnimations(scene);
-  loadNPC1Walking(scene);
-  loadNPC2Walking(scene);
-  loadDragon(scene);
-  loadMonkeys(scene);
-  loadHorses(scene);
-  loadFence(scene); // Carrega o cercado como um único objeto
-}
-
-export function createTreesFrom3DS(scene, options = {}) {
-  return _createTreesFrom3DS(scene, options, objects, onObjectLoadedCallback);
-}
-
 export function createTreeRowFrom3DS(scene, options = {}) {
   return _createTreeRowFrom3DS(scene, options, objects, onObjectLoadedCallback);
 }
@@ -163,4 +149,19 @@ export function loadFence(scene, options = {}) {
     }
     return fenceGroup;
   });
+}
+
+// Carrega todos os objetos da cena
+export function loadAllObjects(scene) {
+  loadCharacterWithAnimations(scene);
+  loadNPC1Walking(scene);
+  loadNPC2Walking(scene);
+  loadDragon(scene);
+  loadMonkeys(scene);
+  loadHorses(scene);
+  loadFence(scene);
+  createStonePath(scene);
+  createTreeRowFrom3DS(scene);
+  createBenchesAlongPath(scene);
+  createStreetLampsAlongPath(scene);
 }

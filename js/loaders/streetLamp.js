@@ -4,6 +4,7 @@ import { loadFBX } from "../loaders.js";
 
 const textureLoader = new THREE.TextureLoader();
 
+// Texturas de cor (albedo) devem ser sRGB; outras (normal/ao/metallic) ficam em Linear
 function setColorTextureEncoding(tex) {
   if (!tex) return;
   // three r152+: colorSpace; versões antigas: encoding
@@ -16,6 +17,7 @@ function setColorTextureEncoding(tex) {
   }
 }
 
+// Tenta carregar textura e retorna null em caso de erro (não quebra o loader)
 function loadOptionalTexture(path) {
   return new Promise((resolve) => {
     textureLoader.load(
@@ -27,6 +29,8 @@ function loadOptionalTexture(path) {
   });
 }
 
+// Instancia postes de luz ao longo de um caminho e adiciona uma PointLight em cada poste.
+// O caminho é definido por start/end e as instâncias são deslocadas lateralmente por `offset`.
 export async function createStreetLampsAlongPath(
   scene,
   options = {},
@@ -50,6 +54,7 @@ export async function createStreetLampsAlongPath(
   } = Object.assign({}, defaults, options);
 
   try {
+    // Carrega o modelo base (template) e liga sombras
     const object = await loadFBX(modelPath);
     object.traverse((c) => {
       if (c.isMesh) {
@@ -62,6 +67,7 @@ export async function createStreetLampsAlongPath(
       texturesDir ||
       modelPath.substring(0, modelPath.lastIndexOf("/") + 1) + "textures/";
 
+    // Carrega texturas (se existirem) para montar um material PBR consistente
     const albedoPromise = loadOptionalTexture(
       baseTexDir + "street_light_albedo.png"
     );
@@ -80,15 +86,16 @@ export async function createStreetLampsAlongPath(
       aoPromise,
     ]);
 
+    // Apenas a textura de cor deve ser sRGB
     setColorTextureEncoding(albedoTex);
 
     let materialTemplate = null;
     if (albedoTex || normalTex || metallicTex || aoTex) {
       materialTemplate = new THREE.MeshStandardMaterial({
-        map: albedoTex || undefined,
-        normalMap: normalTex || undefined,
-        metalnessMap: metallicTex || undefined,
-        aoMap: aoTex || undefined,
+        map: albedoTex,
+        normalMap: normalTex,
+        metalnessMap: metallicTex,
+        aoMap: aoTex,
       });
 
       if (metallicTex) materialTemplate.metalness = 1.0;
@@ -97,6 +104,7 @@ export async function createStreetLampsAlongPath(
     const dx = endX - startX;
     const dz = endZ - startZ;
 
+    // Calcula perpendicular ao caminho para deslocar os postes para um lado
     // vetor perpendicular: à esquerda = (-dz, dx), à direita = (dz, -dx)
     let perpX = -dz;
     let perpZ = dx;
@@ -111,6 +119,7 @@ export async function createStreetLampsAlongPath(
 
     const instances = [];
     for (let i = 0; i < count; i++) {
+      // Interpola ao longo do caminho (t em [0..1])
       const t = count > 1 ? i / (count - 1) : 0.5;
       const xOnPath = startX + dx * t;
       const zOnPath = startZ + dz * t;
@@ -183,6 +192,7 @@ export async function createStreetLampsAlongPath(
       lampLight.position.copy(topLocal);
       clone.add(lampLight);
 
+      // Helper é útil em debug; pode ser desligado no CONFIG
       if (lightCfg.helper !== false) {
         const lampHelper = new THREE.PointLightHelper(lampLight);
         scene.add(lampHelper);

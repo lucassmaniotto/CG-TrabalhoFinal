@@ -8,7 +8,7 @@ export async function loadNPC1Walking(scene, objects, onObjectLoadedCallback) {
 
   // Posição inicial “próxima do player”, mas dentro do range do caminho
   const desiredZ = playerPos.z + 20;
-  const clampedZ = Math.min(Math.max(desiredZ, Math.min(pathStartZ, pathEndZ)), Math.max(pathStartZ, pathEndZ));
+  const restrictedZ = Math.min(Math.max(desiredZ, Math.min(pathStartZ, pathEndZ)), Math.max(pathStartZ, pathEndZ));
 
   return loadNPCWalking(
     scene,
@@ -16,7 +16,7 @@ export async function loadNPC1Walking(scene, objects, onObjectLoadedCallback) {
       objectKey: "npc1",
       displayName: "NPC1",
       modelPath: CONFIG.assets.npc1WalkingModel,
-      position: { x: 8, y: playerPos.y, z: clampedZ },
+      position: { x: 8, y: playerPos.y, z: restrictedZ },
     },
     objects,
     onObjectLoadedCallback
