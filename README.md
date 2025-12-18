@@ -5,7 +5,7 @@ Criação de um cenário 3D interativo utilizando Three.js, com controle de pers
 
 ## Dados dos Alunos
 - **Nomes:** Lucas Smaniotto Schuch | Valtemir Gomes da Silva Junior
-- **Matrículas:** 2121101016 | 
+- **Matrículas:** 2121101016 | 2121101043
 
 ## Requisitos
 O trabalho final deverá ser entregue, assim como os demais, por meio de um link compartilhado no Google Drive. A pasta ou repositório obrigatoriamente deverá ter o nome “FINAL”. Considerando que este trabalho terá um prazo maior de desenvolvimento (duas semanas), não serão aceitos trabalhos que consistam apenas em adaptações triviais de exemplos apresentados em aula — como, por exemplo, alterar a animação do T6 e entregá-la como trabalho final.
