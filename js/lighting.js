@@ -113,7 +113,7 @@ export function initLighting(scene) {
 
   scene.add(dirLight);
 
-  // Helper sempre ligado conforme pedido
+  // Cria o helper de visualização da luz direcional
   if (cfg.helper !== false) {
     dirHelper = new THREE.DirectionalLightHelper(dirLight, 10, 0xff0000);
     dirHelper.visible = true;
