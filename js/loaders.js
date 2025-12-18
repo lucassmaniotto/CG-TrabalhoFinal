@@ -7,6 +7,8 @@ import { loadCharacterWithAnimations as _loadCharacterWithAnimations } from "./l
 import { loadNPC1Walking as _loadNPC1Walking } from "./loaders/NPCs/npc1.js";
 import { loadNPC2Walking as _loadNPC2Walking } from "./loaders/NPCs/npc2.js";
 import { loadDragon as _loadDragon } from "./loaders/dragon.js";
+import { loadMonkeys as _loadMonkeys } from "./loaders/monkey.js";
+import { loadHorses as _loadHorses } from "./loaders/horse.js";
 
 import {
   createTreesFrom3DS as _createTreesFrom3DS,
@@ -57,6 +59,40 @@ export function loadTDS(path) {
   });
 }
 
+// Helper para carregar um OBJ com seu MTL e devolver uma Promise
+// `resourcePath` deve apontar para a pasta onde estão as texturas referenciadas pelo .mtl
+export function loadOBJWithMTL({ objPath, mtlPath, resourcePath = null }) {
+  const mtlLoader = new MTLLoader();
+  if (resourcePath) {
+    mtlLoader.setResourcePath(resourcePath);
+  } else {
+    const basePath = mtlPath.substring(0, mtlPath.lastIndexOf("/") + 1);
+    mtlLoader.setResourcePath(basePath);
+  }
+
+  return new Promise((resolve, reject) => {
+    mtlLoader.load(
+      mtlPath,
+      (materials) => {
+        try {
+          materials.preload();
+        } catch (e) {}
+
+        const objLoader = new OBJLoader();
+        objLoader.setMaterials(materials);
+        objLoader.load(
+          objPath,
+          (object) => resolve(object),
+          undefined,
+          (error) => reject(error)
+        );
+      },
+      undefined,
+      (error) => reject(error)
+    );
+  });
+}
+
 // Define callback para quando um objeto for carregado
 export function setOnObjectLoadedCallback(callback) {
   onObjectLoadedCallback = callback;
@@ -79,12 +115,22 @@ export function loadDragon(scene) {
   return _loadDragon(scene, objects, onObjectLoadedCallback);
 }
 
+export function loadMonkeys(scene) {
+  return _loadMonkeys(scene, objects, onObjectLoadedCallback);
+}
+
+export function loadHorses(scene) {
+  return _loadHorses(scene, objects, onObjectLoadedCallback);
+}
+
 // Carrega todos os objetos da cena
 export function loadAllObjects(scene) {
   loadCharacterWithAnimations(scene);
   loadNPC1Walking(scene);
   loadNPC2Walking(scene);
   loadDragon(scene);
+  loadMonkeys(scene);
+  loadHorses(scene);
   loadFence(scene); // Adiciona carregamento da cerca
   loadFence2(scene); // Adiciona carregamento da cerca
   loadFence3(scene); // Adiciona carregamento da cerca

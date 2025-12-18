@@ -85,6 +85,70 @@ export const CONFIG = {
     rotationY: 0,
   },
 
+  // Configuração do Macaco (OBJ + MTL)
+  monkey: {
+    objPath: "./assets/models/Monkey/Monkey_obj.obj",
+    mtlPath: "./assets/models/Monkey/Monkey_mtl.mtl",
+    texturesDir: "./assets/models/Monkey/textures/",
+
+    count: 8,
+    scale: 0.1,
+    groundY: null,
+
+    // Rotação base do modelo (OBJ exportado do 3ds/Max costuma precisar de ajuste)
+    modelRotation: { x: -Math.PI / 2, y: 0, z: 0 },
+
+    // Primeiro cercado (primeira seção do retângulo formado pelas cercas)
+    firstCorralBounds: {
+      xMin: -172,
+      xMax: -29.75,
+      zMin: 1,
+      zMax: 206.6,
+    },
+
+    // Offsets relativos ao centro do primeiro cercado
+    placements: [
+      { dx: -43, dz: -45, rz: -27 },
+      { dx: -12, dz: -35, rz: 12 },
+      { dx: 17, dz: -45, rz: -15 },
+      { dx: 48, dz: -35, rz: 8 },
+      { dx: -33, dz: 20, rz: 7 },
+      { dx: -4, dz: 10, rz: 32 },
+      { dx: 23, dz: 25, rz: -22 },
+      { dx: 38, dz: 15, rz: 14 },
+    ],
+  },
+
+  // Configuração do Cavalo (OBJ + MTL)
+  horse: {
+    objPath: "./assets/models/Horse/Horse_obj.obj",
+    mtlPath: "./assets/models/Horse/Horse_mtl.mtl",
+    texturesDir: "./assets/models/Horse/textures/",
+
+    count: 3,
+    scale: 0.015,
+    groundY: null,
+
+    // Normalmente OBJ do 3dsMax precisa desse ajuste
+    modelRotation: { x: -Math.PI / 2, y: 0, z: 0 },
+
+    // Último cercado: faixa final do retângulo (derivada de js/loaders/fence.js)
+    // z entre createFence3 (413.23) e createFence4 (620), com laterais indo até 617
+    lastCorralBounds: {
+      xMin: -172,
+      xMax: -29.75,
+      zMin: 413.23,
+      zMax: 617,
+    },
+
+    // Offsets relativos ao centro do último cercado
+    placements: [
+      { dx: -35, dz: -55, rz: 10 },
+      { dx: 5, dz: -10, rz: -15 },
+      { dx: 35, dz: 35, rz: 20 },
+    ],
+  },
+
   // Configurações padrão para a função createTreeRowFrom3DS
   treeRow: {
     modelPath: "./assets/models/Tree/Tree1.3ds", // caminho do modelo
