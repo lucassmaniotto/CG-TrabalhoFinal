@@ -63,6 +63,28 @@ export const CONFIG = {
     speed: 30,
   },
 
+  // Área do cercado (derivada das posições usadas em js/loaders/fence.js)
+  // Usada para posicionar o Dragão no centro do cercado.
+  corral: {
+    xMin: -172,
+    xMax: -29.75,
+    zMin: 1,
+    zMax: 617,
+    // Use `null` para usar CONFIG.character.basePosition.y
+    groundY: null,
+  },
+
+  // Configuração do Dragão
+  dragon: {
+    modelPath: "./assets/models/Dragon/Dragon.fbx",
+    texturesDir: "./assets/models/Dragon/textures/",
+    scale: 0.01,
+    // Índice de animações
+    idleIndex: 2,
+    yOffset: 0,
+    rotationY: 0,
+  },
+
   // Configurações padrão para a função createTreeRowFrom3DS
   treeRow: {
     modelPath: "./assets/models/Tree/Tree1.3ds", // caminho do modelo

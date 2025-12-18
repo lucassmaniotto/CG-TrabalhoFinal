@@ -6,6 +6,7 @@ import { MTLLoader } from "three/addons/loaders/MTLLoader.js";
 import { loadCharacterWithAnimations as _loadCharacterWithAnimations } from "./loaders/player.js";
 import { loadNPC1Walking as _loadNPC1Walking } from "./loaders/NPCs/npc1.js";
 import { loadNPC2Walking as _loadNPC2Walking } from "./loaders/NPCs/npc2.js";
+import { loadDragon as _loadDragon } from "./loaders/dragon.js";
 
 import {
   createTreesFrom3DS as _createTreesFrom3DS,
@@ -74,11 +75,16 @@ export function loadNPC2Walking(scene) {
   return _loadNPC2Walking(scene, objects, onObjectLoadedCallback);
 }
 
+export function loadDragon(scene) {
+  return _loadDragon(scene, objects, onObjectLoadedCallback);
+}
+
 // Carrega todos os objetos da cena
 export function loadAllObjects(scene) {
   loadCharacterWithAnimations(scene);
   loadNPC1Walking(scene);
   loadNPC2Walking(scene);
+  loadDragon(scene);
   loadFence(scene); // Adiciona carregamento da cerca
   loadFence2(scene); // Adiciona carregamento da cerca
   loadFence3(scene); // Adiciona carregamento da cerca

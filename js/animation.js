@@ -4,6 +4,18 @@ let mixer = null;
 let activeAction = null;
 const actions = { idle: null, walk: null };
 
+// Mixers extras (ex.: dragão) que também precisam de update no loop
+const externalMixers = new Set();
+
+export function addExternalMixer(extraMixer) {
+  if (extraMixer) externalMixers.add(extraMixer);
+  return extraMixer;
+}
+
+export function removeExternalMixer(extraMixer) {
+  if (extraMixer) externalMixers.delete(extraMixer);
+}
+
 /**
  * Inicializa o mixer de animações para um objeto
  * Tenta identificar automaticamente os clips de idle e walk pelos nomes.
@@ -73,6 +85,16 @@ export function switchAction(nextAction, duration = 0.2) {
 export function updateAnimations(delta) {
   if (mixer) {
     mixer.update(delta);
+  }
+
+  if (externalMixers.size) {
+    for (const m of externalMixers) {
+      try {
+        m.update(delta);
+      } catch (e) {
+        // ignora mixer inválido
+      }
+    }
   }
 }
 
