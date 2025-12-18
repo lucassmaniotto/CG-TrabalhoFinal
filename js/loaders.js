@@ -1,5 +1,7 @@
 import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { TDSLoader } from "three/addons/loaders/TDSLoader.js";
+import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
+import { MTLLoader } from "three/addons/loaders/MTLLoader.js";
 
 import { loadCharacterWithAnimations as _loadCharacterWithAnimations } from "./loaders/player.js";
 import { loadNPC1Walking as _loadNPC1Walking } from "./loaders/NPCs/npc1.js";
@@ -13,6 +15,12 @@ import {
 export { loadGroundTexture, createStonePath } from "./loaders/stonePath.js";
 import { createBenchesAlongPath as _createBenchesAlongPath } from "./loaders/bench.js";
 import { createStreetLampsAlongPath as _createStreetLampsAlongPath } from "./loaders/streetLamp.js";
+import { createFence as _createFence } from "./loaders/fence.js";
+import { createFence2 as _createFence2 } from "./loaders/fence.js";
+import { createFence3 as _createFence3 } from "./loaders/fence.js";
+import { createFence4 as _createFence4 } from "./loaders/fence.js";
+import { createFence5 as _createFence5 } from "./loaders/fence.js";
+import { createFence6 as _createFence6 } from "./loaders/fence.js";
 
 export const objects = {};
 
@@ -71,6 +79,12 @@ export function loadAllObjects(scene) {
   loadCharacterWithAnimations(scene);
   loadNPC1Walking(scene);
   loadNPC2Walking(scene);
+  loadFence(scene); // Adiciona carregamento da cerca
+  loadFence2(scene); // Adiciona carregamento da cerca
+  loadFence3(scene); // Adiciona carregamento da cerca
+  loadFence4(scene); // Adiciona carregamento da cerca
+  loadFence5(scene); // Adiciona carregamento da cerca
+  loadFence6(scene); // Adiciona carregamento da cerca
 }
 
 export function createTreesFrom3DS(scene, options = {}) {
@@ -97,4 +111,82 @@ export function createStreetLampsAlongPath(scene, options = {}) {
     objects,
     onObjectLoadedCallback
   );
+}
+
+export function loadFence(scene, options = {}) {
+  return _createFence(scene, options).then((fences) => {
+    // Adiciona ao objects e chama callback
+    fences.forEach((fence, index) => {
+      objects[`fence${index + 1}`] = fence;
+      if (onObjectLoadedCallback) {
+        onObjectLoadedCallback(`fence${index + 1}`, fence);
+      }
+    });
+    return fences;
+  });
+}
+
+export function loadFence2(scene, options = {}) {
+  return _createFence2(scene, options).then((fences) => {
+    // Adiciona ao objects e chama callback
+    fences.forEach((fence, index) => {
+      objects[`fence${index + 1}`] = fence;
+      if (onObjectLoadedCallback) {
+        onObjectLoadedCallback(`fence${index + 1}`, fence);
+      }
+    });
+    return fences;
+  });
+}
+
+export function loadFence3(scene, options = {}) {
+  return _createFence3(scene, options).then((fences) => {
+    // Adiciona ao objects e chama callback
+    fences.forEach((fence, index) => {
+      objects[`fence${index + 1}`] = fence;
+      if (onObjectLoadedCallback) {
+        onObjectLoadedCallback(`fence${index + 1}`, fence);
+      }
+    });
+    return fences;
+  });
+}
+
+export function loadFence4(scene, options = {}) {
+  return _createFence4(scene, options).then((fences) => {
+    // Adiciona ao objects e chama callback
+    fences.forEach((fence, index) => {
+      objects[`fence${index + 1}`] = fence;
+      if (onObjectLoadedCallback) {
+        onObjectLoadedCallback(`fence${index + 1}`, fence);
+      }
+    });
+    return fences;
+  });
+}
+
+export function loadFence5(scene, options = {}) {
+  return _createFence5(scene, options).then((fences) => {
+    // Adiciona ao objects e chama callback
+    fences.forEach((fence, index) => {
+      objects[`fence${index + 1}`] = fence;
+      if (onObjectLoadedCallback) {
+        onObjectLoadedCallback(`fence${index + 1}`, fence);
+      }
+    });
+    return fences;
+  });
+}
+
+export function loadFence6(scene, options = {}) {
+  return _createFence6(scene, options).then((fences) => {
+    // Adiciona ao objects e chama callback
+    fences.forEach((fence, index) => {
+      objects[`fence${index + 1}`] = fence;
+      if (onObjectLoadedCallback) {
+        onObjectLoadedCallback(`fence${index + 1}`, fence);
+      }
+    });
+    return fences;
+  });
 }
